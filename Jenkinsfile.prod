@@ -1,0 +1,46 @@
+pipeline{
+    agent any
+    environment {
+	REPOSITORY = credentials('repository')
+        IMAGE = "spring-app-prod"
+        TAG = "${BUILD_NUMBER}"
+    }
+    stages {
+        stage('clean workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage('Checkout from Git'){
+            steps{
+                git branch: 'dev', url: 'https://github.com/Adharshkh/springboot-app.git/'
+            }
+        }
+
+        stage("Docker Build & Push"){
+            steps{
+                script{
+		    sh "sudo docker build -t ${IMAGE} ."
+                    sh "aws ecr get-login-password --region ${REGION} | sudo docker login --username AWS --password-stdin ${REPOSITORY}"
+                    sh "sudo docker tag ${IMAGE} ${REPOSITORY}/${IMAGE}:${TAG} "
+                    sh "sudo docker push ${REPOSITORY}/${IMAGE}:${TAG} "
+                    sh "sudo docker tag ${IMAGE} ${REPOSITORY}/${IMAGE}:latest "
+                    sh "sudo docker push ${REPOSITORY}/${IMAGE}:latest "
+                }
+            }
+        }
+        stage('Install trivy'){
+            steps{
+                sh "wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb"
+                sh "sudo dpkg -i trivy_0.18.3_Linux-64bit.deb"
+            }
+        }
+        stage(' Trivy Scan') {
+            steps {
+                // Scan again and fail on CRITICAL vulns
+                sh 'sudo trivy image ${REPOSITORY}/${IMAGE}:latest'
+
+            }
+        }
+    }
+}
