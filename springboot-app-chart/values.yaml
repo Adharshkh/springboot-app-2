@@ -41,7 +41,7 @@ service:
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations: {}
   # kubernetes.io/ingress.class: nginx
@@ -69,7 +69,7 @@ resources: {}
 #   memory: 128Mi
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 2
   maxReplicas: 50
   targetCPUUtilizationPercentage: 50
