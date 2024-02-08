@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: spring-app
-  pullPolicy: IfNotPresent
+  repository: 039033235676.dkr.ecr.us-east-2.amazonaws.com/spring-app-prod
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
