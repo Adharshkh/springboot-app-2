@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: adharshkh/spring-app-dev
+  repository: 039033235676.dkr.ecr.us-east-2.amazonaws.com/spring-app-dev
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "37"
+  tag: "17"
 
 imagePullSecrets: []
 nameOverride: ""
